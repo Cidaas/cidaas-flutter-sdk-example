@@ -82,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   home: _cidaasLoginProvider.isAuth
                       ? Navigator.of(context)
                       .pushReplacementNamed(LoggedInScreen.route)
-                      : LoginHandleScreen(LoggedInScreen.route, LoggedInScreen()),
+                      : LoginHandleScreen(LoggedInScreen.route),
             routes: {
-              LoggedInScreen.route: (ctx) => LoggedInScreen()
+              LoggedInScreen.route: (ctx) => LoggedInScreen() //Register your reroute Page here
         }),
         ),
     );
