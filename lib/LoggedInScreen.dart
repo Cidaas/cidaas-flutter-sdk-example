@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterexample/main.dart';
 
 class LoggedInScreen extends StatefulWidget {
   LoggedInScreen({Key key, this.title}) : super(key: key);
@@ -44,18 +45,38 @@ class _LoggedInScreen extends State<LoggedInScreen> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        title: Text('My home screen'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: Text('$_counter'),
-          onPressed: () {
-            // Navigate to the second screen using a named route.
-            _incrementCounter();
-          },
+        appBar: AppBar(
+          title: Text('My home screen'),
         ),
-      ),
-    );
+        body: ListView(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: <Widget>[
+              Center(
+                child: RaisedButton(
+                  child: Text('$_counter'),
+                  onPressed: () {
+                    _incrementCounter();
+                  },
+                ),
+              ),
+              Center(
+                child: RaisedButton(
+                    child: Text('Log out'),
+                    onPressed: () => {
+                          MyApp.cidaasLoginProvider
+                              .doLogout()
+                              .then((success) => {
+                                    if (success)
+                                      {
+                                        //We are logged out
+                                        print("Logged out!"),
+                                        Navigator.pushNamed(
+                                            context, MyHomePage.route)
+                                      }
+                                  })
+                        }),
+              ),
+            ]));
   }
 }
