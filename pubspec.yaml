@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   cidaassdkflutter:
-    path: /home/florian/StudioProjects/cidaas-sdk-flutter
+    path: ../cidaas-sdk-flutter
   provider: ^4.0.4
 
 
@@ -47,10 +47,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

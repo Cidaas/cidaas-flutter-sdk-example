@@ -1,0 +1,7 @@
+{
+  "baseUrl": "http://yourCidaasBaseUrl.cidaas.de",
+  "clientId": "yourClientId",
+  "clientSecret": "yourClientSecret",
+  "scopes": "openid profile email",
+  "redirectUri": "yourCustomRedirectUri"
+}
