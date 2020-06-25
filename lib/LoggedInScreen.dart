@@ -1,82 +1,155 @@
+import 'package:cidaassdkflutter/cidaassdkflutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterexample/main.dart';
+import 'package:flutterexample/user_info_entity.dart';
 
 class LoggedInScreen extends StatefulWidget {
-  LoggedInScreen({Key key, this.title}) : super(key: key);
+  LoggedInScreen({Key key, this.title, this.tokenEntity}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  static final String route = "/homepage";
+  static final String route = "/loggedIn";
   final String title;
+  final TokenEntity tokenEntity;
 
   @override
-  _LoggedInScreen createState() => _LoggedInScreen();
+  _LoggedInScreen createState() => _LoggedInScreen(tokenEntity);
 }
 
 class _LoggedInScreen extends State<LoggedInScreen> {
   Duration duration;
 
   int _counter = 0;
+  TokenEntity tokenEntity;
+  UserInfoEntity userInfoEntity;
+
+  List<Item> _data = new List();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _LoggedInScreen(TokenEntity tokenEntity) {
+    this.tokenEntity = tokenEntity;
+    print("Received Token from event: ${tokenEntity.toString()}");
+    refreshTokenDataDisplay();
+  }
+
+  void refreshTokenDataDisplay() async {
+    TokenEntity tokenEntity = await CidaasLoginProvider.getStoredAccessToken();
+    var claims =
+        CidaasLoginProvider.getTokenClaimSetForToken(tokenEntity.idToken);
+    print("Claims in LoggedInScreen: " + claims.toString());
+    this.userInfoEntity = UserInfoEntity.fromJson(claims);
+    List<Item> _list = new List();
+    _list.add(new Item(headerValue: 'Email', content: userInfoEntity.email));
+    _list.add(new Item(
+        headerValue: 'Complete userInfo',
+        content: userInfoEntity.toJson().toString()));
+    _list.add(new Item(headerValue: 'Sub', content: tokenEntity.sub));
+    _list.add(new Item(
+        headerValue: 'Access_token', content: tokenEntity.accessToken));
+    _list.add(new Item(
+        headerValue: 'Refresh_token', content: tokenEntity.refreshToken));
+    _list.add(new Item(headerValue: 'Id_token', content: tokenEntity.idToken));
+    setState(() {
+      _data = _list;
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    Widget _buildTokenInfos() {
+      return ExpansionPanelList(
+        expansionCallback: (int index, bool isExpanded) {
+          setState(() {
+            this._data[index].isExpanded = !isExpanded;
+          });
+        },
+        children: this._data.map<ExpansionPanel>((Item item) {
+          return ExpansionPanel(
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return ListTile(
+                title: Text('${item.headerValue}'),
+              );
+            },
+            body: ListTile(
+                title: Text('${item.content}'),
+                subtitle: Text('To delete this panel, tap the trash can icon'),
+                trailing: Icon(Icons.delete),
+                onTap: () {
+                  setState(() {
+                    this
+                        ._data
+                        .removeWhere((currentItem) => item == currentItem);
+                  });
+                }),
+            isExpanded: item.isExpanded,
+          );
+        }).toList(),
+      );
+    }
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text('My home screen'),
-        ),
         body: ListView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: ScrollPhysics(),
             shrinkWrap: true,
             children: <Widget>[
-              Center(
-                child: RaisedButton(
-                  child: Text('$_counter'),
-                  onPressed: () {
-                    _incrementCounter();
-                  },
-                ),
-              ),
-              Center(
-                child: RaisedButton(
-                    child: Text('Log out'),
-                    onPressed: () => {
-                          MyApp.cidaasLoginProvider
-                              .doLogout()
-                              .then((success) => {
-                                    if (success)
-                                      {
-                                        //We are logged out
-                                        print("Logged out!"),
-                                        Navigator.pushNamed(
-                                            context, MyHomePage.route)
-                                      }
-                                  })
-                        }),
-              ),
-            ]));
+          Center(
+            child: RaisedButton(
+              child: Text('$_counter'),
+              onPressed: () {
+                // Navigate to the second screen using a named route.
+                _incrementCounter();
+              },
+            ),
+          ),
+          Center(
+            child: RaisedButton(
+              child: Text('Reload token data'),
+              onPressed: () {
+                // Navigate to the second screen using a named route.
+                refreshTokenDataDisplay();
+              },
+            ),
+          ),
+          Center(
+            child: RaisedButton(
+              child: Text('Log out'),
+              onPressed: () {
+                // Navigate to the second screen using a named route.
+                CidaasLoginProvider.doLogout(context).whenComplete(() => {
+                      CidaasLoginProvider.isAuth().then((val) => {print(val)})
+                    });
+              },
+            ),
+          ),
+          Center(
+            child: RaisedButton(
+              child: Text('Print isAuth'),
+              onPressed: () {
+                CidaasLoginProvider.isAuth().then((val) => {print(val)});
+              },
+            ),
+          ),
+          _buildTokenInfos()
+        ]));
   }
+}
+
+class Item {
+  Item({
+    this.content,
+    this.headerValue,
+    this.isExpanded = false,
+  });
+
+  String content;
+  String headerValue;
+  bool isExpanded;
 }
