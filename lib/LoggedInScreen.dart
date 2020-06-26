@@ -1,6 +1,5 @@
-import 'package:cidaassdkflutter/cidaassdkflutter.dart';
+import 'package:cidaas_flutter_sdk/cidaas_flutter_sdk.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterexample/main.dart';
 import 'package:flutterexample/user_info_entity.dart';
 
 class LoggedInScreen extends StatefulWidget {

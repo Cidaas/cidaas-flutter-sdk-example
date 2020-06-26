@@ -1,8 +1,8 @@
 # flutterexample
-An example project to test the cidaas flutter sdk
+An example project to test the [cidaas flutter SDK](https://github.com/Cidaas/cidaas-flutter-SDK)
 
 ## Getting Started
-This example project shows how to use the cidaas flutter sdk.
+This example project shows how to use the cidaas flutter SDK.
 
 ### How to test the example
 To test the example project, first clone this project onto your local machine.  
@@ -46,6 +46,6 @@ Once logged out, the TokenEntity stored via the flutter_secure_storage will be d
 The user_info_entity is used as an example on how the token claims could be used to be parsed into an dart object.
 
 ### Mentions:
-The cidaas flutter sdk is using the [Bloc pattern](https://pub.dev/packages/bloc).  
+The cidaas flutter SDK is using the [Bloc pattern](https://pub.dev/packages/bloc).  
 It is storing the retrieved tokens via the [Flutter secure storage](https://pub.dev/packages/flutter_secure_storage).  
 To display the (web-) login screen the [Flutter webview plugin](https://pub.dev/packages/flutter_webview_plugin) is used.
